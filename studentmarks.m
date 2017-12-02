@@ -1,6 +1,6 @@
 %% Acedemic Performance Prediction Model Using Machine Learning
 %  
-%We've used two different methods to predict the student's SGPA in the
+%We've used two different methods to predict the student's SGPA in the 
 %the consequent semesters. 
 %Feature Normalization And Gradient Descent
 %
@@ -9,7 +9,7 @@
 fprintf('\tIn this part, we will implement linear regression to\n');
 fprintf('\tpredict the SGPA of students in consequent semesters.\n');   
 fprintf('\tThe file')
-fprintf('ex1data2.txt\n')
+fprintf('ex11.txt\n')
 fprintf('\tcontains a training set of student SGPA in previous Semesters\n')
 fprintf('\tThe first column is the SGPA, the\n')
 fprintf('\tsecond column is the SGPA, and the third column\n');
@@ -33,17 +33,16 @@ clear ; close all; clc
 fprintf('Loading data ...\n');
 
 %% Load Data
-data = load('exa1.csv');
-X = data(:, 1);
-y = data(:, 2);
+data = load('ex11.txt');
+X = data(:, [1,2]);
+y = data(:, 3);
 m = length(y);
 plotData(X,y);
 % Print out some data points
-
 fprintf('First 10 examples from the dataset: \n\n\n');
-fprintf('First Sem SGPA \tSecond Sem SGPA\n');
+fprintf('First Sem SGPA \t\t\tSecond Sem SGPA\t\t\t Third Semgpa\n\n');
 
-fprintf(' %f \t\t\t%f\n', [X(1:10,:) y(1:10,:)]');
+fprintf(' %f \t\t\t%f\t\t%f\n', [X([1:10],1) X([1:10],2) y(1:10,:)]'');
 
 fprintf('Program paused. Press enter to continue.\n');
 pause;
@@ -78,11 +77,11 @@ X = [ones(m, 1) X];
 fprintf('Using Gradient Descent ...\n');
 
 % Choose some alpha value
-alpha = 0.01;
+alpha = 0.1;
 num_iters = 1000;
 
 % Init Theta and Run Gradient Descent 
-theta = zeros(2, 1);
+theta = zeros(3, 1);
 [theta, J_history] = gradientDescentMulti(featureNormalize(X), featureNormalize(y), theta, alpha, num_iters);
 
 % Plot the convergence graph
@@ -94,23 +93,25 @@ ylabel('Cost J');
 % Display gradient descent's result
 fprintf('\nEnter the marks in First Sem ');
 FirstSemMarks= input('');
+fprintf('\nEnter the marks in SEC Sem ');
 
-v=[0 (FirstSemMarks-mean(X))/std(X)];
+SecSemMarks=input('');
+v=[0 (FirstSemMarks-mean(X(:,2)))/std(X(:,2)) (SecSemMarks-mean(X(:,3)))/std(X(:,3))];
 % Estimate the marks.
-SecSemMarks=v*theta;
-SecSemMarks=SecSemMarks*std(y)+mean(y);
+thrdSemMarks=v*theta;
+thrdSemMarks=thrdSemMarks*std(y)+mean(y);
 
 
 % ============================================================
 
-fprintf(['Predicted marks in 2rd Sem are :\n $%f\n\n\n'], SecSemMarks);
+fprintf(['Predicted marks in 3rd Sem are :\n $%f\n\n\n'], thrdSemMarks);
 
 fprintf('Program paused. Press enter to continue.\n');
 pause;
 theta=normalEqn(X,y);
-SecSemMarks=[1 FirstSemMarks]*theta;
+thrdSemMarks=[1 FirstSemMarks SecSemMarks]*theta;
 fprintf('USING NORMAL EQUATIONS\n\n');
-fprintf(['Predicted marks in 2rd Sem are :\n $%f\n'], SecSemMarks);
+fprintf(['Predicted marks in 2rd Sem are :\n $%f\n'], thrdSemMarks);
 
 
 
